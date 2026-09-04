@@ -3847,11 +3847,228 @@ def run_pipeline(args: argparse.Namespace) -> int:
         )
 
         # Stage 12/13 now consume the N10-filtered
-        # selection artifact, while the original Alpha6
+        # selection artifact by default, while the original Alpha6
         # portfolio/report remain intact for lineage audit.
+        #
+        # Staged bounded continuation may replace this downstream
+        # portfolio only after independently fresh H2 N10 authority
+        # and deterministic final merge.
         refined_portfolio = (
             post_n10_portfolio
         )
+
+        if args.nonobviousness_bounded_continuation_enforce:
+            bounded_index_dir = (
+                Path(
+                    str(
+                        args.data_root
+                    )
+                )
+                / "corpus"
+                / args.corpus_id
+                / "mechanism"
+                / "navigation"
+                / "node_index"
+            )
+
+            bounded_continuation_dir = (
+                run
+                / "novelty_refinement_a6."
+                  "n10.continuation"
+            )
+
+            bounded_continuation_report = (
+                run
+                / "novelty_refinement_a6."
+                  "n10.continuation.json"
+            )
+
+            runner.run_stage(
+                "[11N10-R/13] Bounded diagnostic "
+                "post-generation continuation",
+                "scripts.discovery."
+                "run_n10_bounded_post_generation_continuation",
+                [
+                    "--first-post-n10-report",
+                    str(
+                        post_n10_report
+                    ),
+                    "--source-lineage",
+                    str(
+                        lineage
+                    ),
+                    "--axis-plan",
+                    str(
+                        axis_plan
+                    ),
+                    "--dual-context",
+                    str(
+                        dual_context
+                    ),
+                    "--provider-plan",
+                    str(
+                        literature_provider_plan_path
+                    ),
+                    "--index-dir",
+                    str(
+                        bounded_index_dir
+                    ),
+                    "--domain-profile",
+                    domain_profile.profile_id,
+                    "--model",
+                    args.model,
+                    "--critic-model",
+                    args.critic_model,
+                    *(
+                        [
+                            "--base-url",
+                            args.base_url,
+                        ]
+                        if args.base_url
+                        else []
+                    ),
+                    "--api-key-env",
+                    args.api_key_env,
+                    "--results-per-query",
+                    str(
+                        args.results_per_query
+                    ),
+                    *(
+                        [
+                            "--question-task-preservation-enforce",
+                        ]
+                        if args.question_task_preservation_enforce
+                        else []
+                    ),
+                    "--work-dir",
+                    str(
+                        bounded_continuation_dir
+                    ),
+                    "--output-report",
+                    str(
+                        bounded_continuation_report
+                    ),
+                ],
+                expected=[
+                    bounded_continuation_report,
+                ],
+            )
+
+            bounded_final_portfolio = (
+                run
+                / "novelty_refinement_a6."
+                  "n10.bounded.portfolio.json"
+            )
+
+            bounded_merge_audit = (
+                run
+                / "novelty_refinement_a6."
+                  "n10.bounded.merge_audit.json"
+            )
+
+            runner.run_stage(
+                "[11N10-M/13] Merge authoritative "
+                "first-pass and bounded-H2 survivors",
+                "scripts.discovery."
+                "merge_n10_bounded_continuation_portfolio",
+                [
+                    "--first-post-n10-portfolio",
+                    str(
+                        post_n10_portfolio
+                    ),
+                    "--first-post-n10-report",
+                    str(
+                        post_n10_report
+                    ),
+                    "--continuation-report",
+                    str(
+                        bounded_continuation_report
+                    ),
+                    "--output-portfolio",
+                    str(
+                        bounded_final_portfolio
+                    ),
+                    "--output-audit",
+                    str(
+                        bounded_merge_audit
+                    ),
+                ],
+                expected=[
+                    bounded_final_portfolio,
+                    bounded_merge_audit,
+                ],
+            )
+
+            refined_portfolio = (
+                bounded_final_portfolio
+            )
+
+            bounded_report_payload = (
+                _load_json(
+                    bounded_continuation_report
+                )
+            )
+
+            bounded_merge_payload = (
+                _load_json(
+                    bounded_merge_audit
+                )
+            )
+
+            runner.manifest[
+                "n10_bounded_continuation"
+            ] = {
+                "enabled":
+                    True,
+
+                "continuation_work_item_count":
+                    bounded_report_payload.get(
+                        "continuation_work_item_count"
+                    ),
+
+                "bounded_h2_survivor_count":
+                    bounded_merge_payload.get(
+                        "bounded_h2_survivor_count"
+                    ),
+
+                "continuation_report":
+                    str(
+                        bounded_continuation_report
+                    ),
+
+                "merge_audit":
+                    str(
+                        bounded_merge_audit
+                    ),
+
+                "final_portfolio":
+                    str(
+                        bounded_final_portfolio
+                    ),
+
+                "max_continuation_depth":
+                    1,
+
+                "scientific_policy_changed":
+                    False,
+            }
+
+            runner._save_manifest()
+
+        else:
+            # Disabled staged mode retains the historical
+            # first-post-N10 downstream binding established above.
+            runner.manifest[
+                "n10_bounded_continuation"
+            ] = {
+                "enabled":
+                    False,
+
+                "scientific_policy_changed":
+                    False,
+            }
+
+            runner._save_manifest()
 
     final_hypotheses = _hypothesis_count(refined_portfolio)
     runner.manifest["final_hypothesis_count"] = final_hypotheses
@@ -4056,9 +4273,12 @@ def parse_args() -> argparse.Namespace:
         help=(
             "Enable full N10 scientific non-obviousness production "
             "enforcement. Original hypotheses must pass N10 before "
-            "Alpha6 fallback, and every accepted Alpha6 refinement "
-            "or re-axis candidate must pass a fresh external N10 "
-            "closure and adjudication before downstream selection."
+            "Alpha6 fallback, every accepted Alpha6 refinement or "
+            "re-axis candidate must pass fresh external N10, and exact "
+            "CONDITIONAL + REFINE_NOVELTY_BEARING_SPECIFICATION "
+            "candidates receive at most one diagnostic-aware repair "
+            "attempt followed by fresh H2 N10. Requires explicit "
+            "--data-root for bounded continuation."
         ),
     )
 
@@ -4084,6 +4304,23 @@ def parse_args() -> argparse.Namespace:
             "closure and non-obviousness adjudication before "
             "stage 12/13 selection. Requires "
             "--nonobviousness-original-fallback-enforce."
+        ),
+    )
+
+    parser.add_argument(
+        "--nonobviousness-bounded-continuation-enforce",
+        action="store_true",
+        help=(
+            "Staged N10 bounded-continuation integration. "
+            "After first post-generation N10, only exact "
+            "CONDITIONAL + REFINE_NOVELTY_BEARING_SPECIFICATION "
+            "candidates receive one diagnostic-aware second Alpha6 "
+            "attempt followed by fresh H2 N10 and deterministic "
+            "authority-preserving final merge. Requires "
+            "--nonobviousness-post-generation-enforce and an explicit "
+            "--data-root. The public --nonobviousness-enforce switch "
+            "also enables this path; this explicit flag remains available "
+            "for staged/debug control."
         ),
     )
 
@@ -4270,11 +4507,37 @@ def parse_args() -> argparse.Namespace:
     # the production authority:
     #
     #   1. original fallback enforcement;
-    #   2. fresh post-generation candidate enforcement.
+    #   2. fresh post-generation candidate enforcement;
+    #   3. one bounded diagnostic specification-repair continuation,
+    #      followed by fresh H2 N10 and deterministic final merge.
     #
     if args.nonobviousness_enforce:
         args.nonobviousness_original_fallback_enforce = True
         args.nonobviousness_post_generation_enforce = True
+        args.nonobviousness_bounded_continuation_enforce = True
+
+    if (
+        args.nonobviousness_bounded_continuation_enforce
+        and not args.nonobviousness_post_generation_enforce
+    ):
+        parser.error(
+            "--nonobviousness-bounded-continuation-enforce requires "
+            "--nonobviousness-post-generation-enforce "
+            "(or --nonobviousness-enforce)."
+        )
+
+    if (
+        args.nonobviousness_bounded_continuation_enforce
+        and not str(
+            args.data_root
+            or ""
+        ).strip()
+    ):
+        parser.error(
+            "--nonobviousness-bounded-continuation-enforce requires "
+            "an explicit --data-root so the second Alpha6 mechanism "
+            "index cannot fall back to repository-local historical data."
+        )
 
     if (
         args.cross_axis_global_selection_enforce

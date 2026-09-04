@@ -770,6 +770,8 @@ def main() -> int:
                     str(intake),
                 "full_shadow":
                     str(full),
+                "candidate_gate":
+                    str(candidate_gate_path),
                 "production_gate":
                     str(gate_path),
                 "ready_claim_count":
