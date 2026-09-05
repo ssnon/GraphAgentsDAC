@@ -3398,6 +3398,8 @@ def run_pipeline(args: argparse.Namespace) -> int:
                 str(external_plan),
                 "--external-report",
                 str(external_report),
+                "--portfolio",
+                str(axis_portfolio),
                 "--output",
                 str(nonobviousness_shadow),
             ],

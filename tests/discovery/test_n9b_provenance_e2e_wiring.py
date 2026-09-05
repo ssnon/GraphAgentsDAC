@@ -1,3 +1,5 @@
+import ast
+
 from pathlib import Path
 
 
@@ -141,3 +143,268 @@ def test_main_e2e_passes_context_to_alpha6_n10_enforcer():
 
     assert '"--hypothesis-context"' in block
     assert "str(context)" in block
+
+
+# ------------------------------------------------------------------
+# E3e8-V1 canonical source-portfolio invocation regression
+#
+# These tests intentionally inspect the exact argv list of the
+# specific production invocation. A file/function-wide substring
+# check is insufficient because other stages also pass --portfolio.
+# ------------------------------------------------------------------
+
+
+def _constant_string(
+    node: ast.AST,
+) -> str | None:
+    if (
+        isinstance(node, ast.Constant)
+        and isinstance(node.value, str)
+    ):
+        return node.value
+
+    return None
+
+
+def _argv_for_run_stage(
+    path: Path,
+    *,
+    stage_label: str,
+    module_name: str,
+) -> ast.List:
+    tree = ast.parse(
+        _source(path)
+    )
+
+    matches: list[ast.List] = []
+
+    for node in ast.walk(tree):
+        if not isinstance(
+            node,
+            ast.Call,
+        ):
+            continue
+
+        if not (
+            isinstance(
+                node.func,
+                ast.Attribute,
+            )
+            and node.func.attr
+            == "run_stage"
+        ):
+            continue
+
+        if len(node.args) < 3:
+            continue
+
+        if (
+            _constant_string(
+                node.args[0]
+            )
+            != stage_label
+        ):
+            continue
+
+        if (
+            _constant_string(
+                node.args[1]
+            )
+            != module_name
+        ):
+            continue
+
+        argv = node.args[2]
+
+        if not isinstance(
+            argv,
+            ast.List,
+        ):
+            raise AssertionError(
+                "target run_stage argv "
+                "must be a literal list"
+            )
+
+        matches.append(
+            argv
+        )
+
+    assert len(matches) == 1
+
+    return matches[0]
+
+
+def _argv_for_run_helper(
+    path: Path,
+    *,
+    module_name: str,
+) -> ast.List:
+    tree = ast.parse(
+        _source(path)
+    )
+
+    matches: list[ast.List] = []
+
+    for node in ast.walk(tree):
+        if not isinstance(
+            node,
+            ast.Call,
+        ):
+            continue
+
+        if not (
+            isinstance(
+                node.func,
+                ast.Name,
+            )
+            and node.func.id == "_run"
+        ):
+            continue
+
+        if len(node.args) < 2:
+            continue
+
+        if (
+            _constant_string(
+                node.args[0]
+            )
+            != module_name
+        ):
+            continue
+
+        argv = node.args[1]
+
+        if not isinstance(
+            argv,
+            ast.List,
+        ):
+            raise AssertionError(
+                "target _run argv "
+                "must be a literal list"
+            )
+
+        matches.append(
+            argv
+        )
+
+    assert len(matches) == 1
+
+    return matches[0]
+
+
+def _flag_value_expression(
+    argv: ast.List,
+    flag: str,
+) -> str:
+    positions = [
+        index
+        for index, node
+        in enumerate(argv.elts)
+        if (
+            _constant_string(node)
+            == flag
+        )
+    ]
+
+    assert len(positions) == 1
+
+    index = positions[0]
+
+    assert (
+        index + 1
+        < len(argv.elts)
+    )
+
+    return ast.unparse(
+        argv.elts[
+            index + 1
+        ]
+    )
+
+
+def test_original_n9_shadow_intake_passes_authoritative_source_portfolio():
+    argv = _argv_for_run_stage(
+        E2E,
+        stage_label=(
+            "[10N9-a/13] "
+            "Non-obviousness shadow intake"
+        ),
+        module_name=(
+            "scripts.discovery."
+            "build_nonobviousness_shadow"
+        ),
+    )
+
+    assert (
+        _flag_value_expression(
+            argv,
+            "--query-plan",
+        )
+        == "str(external_plan)"
+    )
+
+    assert (
+        _flag_value_expression(
+            argv,
+            "--external-report",
+        )
+        == "str(external_report)"
+    )
+
+    assert (
+        _flag_value_expression(
+            argv,
+            "--portfolio",
+        )
+        == "str(axis_portfolio)"
+    )
+
+    assert (
+        _flag_value_expression(
+            argv,
+            "--output",
+        )
+        == "str(nonobviousness_shadow)"
+    )
+
+
+def test_fresh_alpha6_n10_intake_passes_candidate_source_portfolio():
+    argv = _argv_for_run_helper(
+        ALPHA6_ENFORCER,
+        module_name=(
+            "scripts.discovery."
+            "build_nonobviousness_shadow"
+        ),
+    )
+
+    assert (
+        _flag_value_expression(
+            argv,
+            "--query-plan",
+        )
+        == "str(query_plan)"
+    )
+
+    assert (
+        _flag_value_expression(
+            argv,
+            "--external-report",
+        )
+        == "str(external_report)"
+    )
+
+    assert (
+        _flag_value_expression(
+            argv,
+            "--portfolio",
+        )
+        == "str(source_portfolio)"
+    )
+
+    assert (
+        _flag_value_expression(
+            argv,
+            "--output",
+        )
+        == "str(intake)"
+    )

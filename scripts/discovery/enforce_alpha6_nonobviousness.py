@@ -597,6 +597,8 @@ def main() -> int:
                 str(query_plan),
                 "--external-report",
                 str(external_report),
+                "--portfolio",
+                str(source_portfolio),
                 "--output",
                 str(intake),
             ],
