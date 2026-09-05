@@ -1028,6 +1028,9 @@ class NoveltyClaimDecomposer:
                     "claim_id": claim_id,
                     "claim_rank": rank,
                     "claim_local_id": row.local_id,
+                    "raw_prior_art_identity_terms": list(
+                        row.prior_art_identity_terms
+                    ),
                     "prior_art_identity_terms": list(
                         prior_art_identity_terms
                     ),
