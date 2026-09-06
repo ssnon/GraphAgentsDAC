@@ -276,9 +276,37 @@ def recover_uniquely_attributed_required_bridge(
                 sibling.claim_id
             )
 
-    if matching_claim_ids != [
+    # Preserve the historical fast path exactly: an identity-admissible
+    # canonical bridge attributed to only this atomic claim is recovered
+    # without consulting any secondary discriminator.
+    if matching_claim_ids == [
         claim.claim_id
     ]:
+        return candidate
+
+    # The current claim must itself remain inside the identity-admissible
+    # ambiguity set.  Secondary discrimination never creates admissibility
+    # for a claim that failed the existing canonical branch-identity check.
+    if (
+        claim.claim_id not in matching_claim_ids
+        or len(matching_claim_ids) < 2
+    ):
+        return ""
+
+    ambiguous_claims = [
+        sibling
+        for sibling in local_claims
+        if sibling.claim_id in matching_claim_ids
+    ]
+
+    selected_claim_id = (
+        select_uniquely_discriminated_atomic_claim_id(
+            candidate_bridge=candidate,
+            sibling_claims=ambiguous_claims,
+        )
+    )
+
+    if selected_claim_id != claim.claim_id:
         return ""
 
     return candidate
