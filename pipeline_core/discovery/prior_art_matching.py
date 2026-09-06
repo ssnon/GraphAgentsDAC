@@ -16,6 +16,7 @@ from pipeline_core.discovery.external_novelty_contracts import (
     PriorArtMatch,
     PriorArtPacket,
     PriorArtRelationship,
+    PriorArtWork,
     RankedPriorArtWork,
 )
 
@@ -96,6 +97,37 @@ class ClaimReviewBackend(Protocol):
     ) -> ClaimPriorArtReviewDraft: ...
 
 
+_NON_CANDIDATE_PROVIDER_DOCUMENT_TYPES = frozenset(
+    {
+        "peer-review",
+    }
+)
+
+
+def _prior_art_ranking_eligible(work: PriorArtWork) -> bool:
+    """Keep retrieval provenance while protecting the finite review budget.
+
+    Eligibility is based only on structured provider document-type metadata.
+    No title, DOI-shape, lexical, or semantic heuristic is used.
+
+    Historical records without type metadata remain eligible. If multiple
+    providers supply types, a record is excluded only when every observed type
+    is an explicitly non-candidate type.
+    """
+    observed_types = {
+        str(value or "").strip().lower()
+        for value in work.provider_document_types.values()
+        if str(value or "").strip()
+    }
+
+    if not observed_types:
+        return True
+
+    return not observed_types.issubset(
+        _NON_CANDIDATE_PROVIDER_DOCUMENT_TYPES
+    )
+
+
 class PriorArtRanker:
     def __init__(
         self,
@@ -122,8 +154,11 @@ class PriorArtRanker:
         candidate_rows = [
             work
             for work in packet.works
-            if claim.claim_id in work.retrieval_claim_ids
-            or bool(global_query_ids & set(work.retrieval_query_ids))
+            if _prior_art_ranking_eligible(work)
+            and (
+                claim.claim_id in work.retrieval_claim_ids
+                or bool(global_query_ids & set(work.retrieval_query_ids))
+            )
         ]
         if not candidate_rows:
             return ClaimPriorArtCandidateSet(

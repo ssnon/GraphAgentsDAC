@@ -629,6 +629,7 @@ class CrossrefProvider:
                     authors.append(name)
             containers = item.get("container-title") or []
             provider_id = doi or str(item.get("URL") or title)
+            provider_document_type = str(item.get("type") or "").strip()
             rows.append(
                 PriorArtWork(
                     work_id=_stable_id("prior_art_work", doi or provider_id),
@@ -647,6 +648,11 @@ class CrossrefProvider:
                     ),
                     providers=[self.provider_name],
                     provider_ids={self.provider_name: provider_id},
+                    provider_document_types=(
+                        {self.provider_name: provider_document_type}
+                        if provider_document_type
+                        else {}
+                    ),
                     retrieval_query_ids=[query.query_id],
                     retrieval_claim_ids=([query.claim_id] if query.claim_id else []),
                 )
@@ -683,6 +689,10 @@ def _merge_work(left: PriorArtWork, right: PriorArtWork) -> PriorArtWork:
         ),
         providers=sorted(set(left.providers) | set(right.providers)),
         provider_ids={**left.provider_ids, **right.provider_ids},
+        provider_document_types={
+            **left.provider_document_types,
+            **right.provider_document_types,
+        },
         retrieval_query_ids=sorted(
             set(left.retrieval_query_ids) | set(right.retrieval_query_ids)
         ),

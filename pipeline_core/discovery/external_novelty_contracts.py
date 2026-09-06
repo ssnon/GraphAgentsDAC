@@ -366,6 +366,7 @@ class PriorArtWork(StrictModel):
     citation_count: int | None = None
     providers: list[str] = Field(default_factory=list)
     provider_ids: dict[str, str] = Field(default_factory=dict)
+    provider_document_types: dict[str, str] = Field(default_factory=dict)
     retrieval_query_ids: list[str] = Field(default_factory=list)
     retrieval_claim_ids: list[str] = Field(default_factory=list)
 
