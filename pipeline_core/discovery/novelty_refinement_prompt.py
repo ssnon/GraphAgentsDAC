@@ -46,6 +46,19 @@ def _render_specification_repair_diagnosis(
             "the grounded HypothesisContext."
         ),
         (
+            "branch_identity_terms below are diagnostic reference "
+            "labels copied from the existing H1 atomic claim. They "
+            "are NOT scientific evidence, NOT a positive premise, "
+            "and do not by themselves justify any missing field."
+        ),
+        (
+            "Use branch_identity_terms only to preserve the identity "
+            "of the already-selected atomic branch when formulating "
+            "an independently supported repair. Do not infer a new "
+            "relation, mechanism, direction, condition, regime, or "
+            "bridge from these labels themselves."
+        ),
+        (
             "Do not add new evidence IDs, mechanisms, relations, "
             "materials, conditions, or literature-derived claims "
             "merely to satisfy this diagnosis."
@@ -71,6 +84,13 @@ def _render_specification_repair_diagnosis(
                 (
                     "  claim_text: "
                     + row.claim_text
+                ),
+                (
+                    "  branch_identity_terms: "
+                    + json.dumps(
+                        row.prior_art_identity_terms,
+                        ensure_ascii=False,
+                    )
                 ),
                 (
                     "  missing_fields: "

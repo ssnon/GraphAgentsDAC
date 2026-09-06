@@ -61,6 +61,10 @@ class N10SpecificationRepairClaimDiagnostic(
         min_length=1
     )
 
+    prior_art_identity_terms: list[str] = Field(
+        default_factory=list
+    )
+
     novelty_selection_role: Literal[
         "NOVELTY_BEARING"
     ] = "NOVELTY_BEARING"
@@ -715,6 +719,9 @@ def build_n10_specification_repair_context(
                 N10SpecificationRepairClaimDiagnostic(
                     claim_id=canonical.claim_id,
                     claim_text=canonical.text,
+                    prior_art_identity_terms=list(
+                        canonical.prior_art_identity_terms
+                    ),
                     missing_fields=missing,
                     reason_codes=reasons,
                 ),
