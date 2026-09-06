@@ -13,6 +13,7 @@ from pipeline_core.discovery.hypothesis_contracts import (
     HypothesisPortfolio,
 )
 from pipeline_core.discovery.novelty_claim_decomposition import (
+    _branch_identity_signature,
     recover_required_bridge_from_hypothesis,
 )
 from pipeline_core.discovery.novelty_residue import (
@@ -66,6 +67,145 @@ def _json_safe(
 _CANONICAL_BRIDGE_PROVENANCE = (
     "CANONICAL_HYPOTHESIS_INFERENTIAL_BRIDGE"
 )
+
+
+def select_uniquely_discriminated_atomic_claim_id(
+    *,
+    candidate_bridge: str,
+    sibling_claims: Sequence[NoveltyResidueClaim],
+) -> str | None:
+    """Return one atomically discriminated sibling claim ID, or None.
+
+    This is a conservative lexical helper over already-existing
+    atomic decomposition metadata.  It does not perform recovery,
+    alter a claim, or provide scientific/production authority.
+
+    The helper intentionally does NOT reinterpret
+    prior_art_identity_terms.  Those terms identify a prior-art
+    family and may legitimately be shared by scientifically
+    distinct sibling claims.
+
+    Only relation_nucleus_terms and distinguishing_terms may act
+    as secondary atomic discriminators.  A discriminator counts
+    only when:
+
+    1. its frozen surface signature is non-empty;
+    2. that exact signature belongs to exactly one sibling claim;
+    3. every retained signature token occurs in candidate_bridge.
+
+    Exactly one sibling must receive at least one such hit.
+    Zero or multiple selected siblings fail closed and return None.
+
+    No synonyms, stemming, abbreviation expansion, embeddings, or
+    scientific inference are performed.
+    """
+
+    candidate = str(
+        candidate_bridge or ""
+    ).strip()
+
+    claims = list(
+        sibling_claims
+    )
+
+    if not candidate or not claims:
+        return None
+
+    hypothesis_ids = {
+        str(
+            sibling.hypothesis_id
+        )
+        for sibling in claims
+    }
+
+    if len(hypothesis_ids) != 1:
+        return None
+
+    claim_ids = [
+        str(
+            sibling.claim_id
+        )
+        for sibling in claims
+    ]
+
+    if (
+        any(
+            not claim_id
+            for claim_id in claim_ids
+        )
+        or len(claim_ids)
+        != len(set(claim_ids))
+    ):
+        return None
+
+    candidate_signature = set(
+        _branch_identity_signature(
+            candidate
+        )
+    )
+
+    if not candidate_signature:
+        return None
+
+    selected_claim_ids: set[str] = set()
+
+    for field_name in (
+        "relation_nucleus_terms",
+        "distinguishing_terms",
+    ):
+        owners: dict[
+            tuple[str, ...],
+            set[str],
+        ] = {}
+
+        for sibling in claims:
+            sibling_id = str(
+                sibling.claim_id
+            )
+
+            for value in getattr(
+                sibling,
+                field_name,
+            ):
+                signature = (
+                    _branch_identity_signature(
+                        str(value)
+                    )
+                )
+
+                if not signature:
+                    continue
+
+                owners.setdefault(
+                    signature,
+                    set(),
+                ).add(
+                    sibling_id
+                )
+
+        for signature, owner_ids in owners.items():
+            if len(owner_ids) != 1:
+                continue
+
+            if not set(
+                signature
+            ).issubset(
+                candidate_signature
+            ):
+                continue
+
+            selected_claim_ids.update(
+                owner_ids
+            )
+
+    if len(selected_claim_ids) != 1:
+        return None
+
+    return next(
+        iter(
+            selected_claim_ids
+        )
+    )
 
 
 def recover_uniquely_attributed_required_bridge(
