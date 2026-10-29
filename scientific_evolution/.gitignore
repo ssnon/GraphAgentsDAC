@@ -1,0 +1,12 @@
+# Research state is NEVER source code.
+evaluation/
+root/
+roots/
+results/
+artifacts/
+*.log
+*.jsonl
+.env
+.env.*
+__pycache__/
+*.py[cod]

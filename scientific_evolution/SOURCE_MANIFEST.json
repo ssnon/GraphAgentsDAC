@@ -1,0 +1,283 @@
+{
+  "schema": "scientific-evolution-v4-source-snapshot-v1",
+  "policy": "NO_SOURCE_MODIFICATION",
+  "scope": "V2_V3_V4_CLEAN_ONLY",
+  "source_files": [
+    {
+      "path": "background/clean/ARCHITECTURE_KO.md",
+      "source_group": "CLEAN",
+      "sha256": "0ab0177d3d9f08658aba66629c49137c4267716d0b0fb7ac7990e7d59d9e5744",
+      "bytes": 3007
+    },
+    {
+      "path": "background/clean/README_KO.md",
+      "source_group": "CLEAN",
+      "sha256": "be1e897cb9ac1a91e2f863ac80d7ac1c191996d66455931e6d083d785b0156d3",
+      "bytes": 7469
+    },
+    {
+      "path": "background/v3/ARCHITECTURE_KO.md",
+      "source_group": "V3",
+      "sha256": "a23d462f0105963466e3f2e3c70db4c585e1417dde10ea4c59e8ecc3498d3631",
+      "bytes": 1754
+    },
+    {
+      "path": "background/v3/README_KO.md",
+      "source_group": "V3",
+      "sha256": "820e58fc69064eab8d1526f45fecf7eb7c662803bf7106e826d6a6ce90b6bf57",
+      "bytes": 8643
+    },
+    {
+      "path": "background/v4/ARCHITECTURE_KO.md",
+      "source_group": "V4",
+      "sha256": "2143840211bd256cbdbc8b9ac52b952d3226cd52bf92e4f88f1152b8b2503755",
+      "bytes": 1905
+    },
+    {
+      "path": "background/v4/README_KO.md",
+      "source_group": "V4",
+      "sha256": "d70c4d82cb1aa2a5d40fcac941b5d3754f745eee05451c430fb4c852ff500fca",
+      "bytes": 9491
+    },
+    {
+      "path": "checks/clean/bootstrap.py",
+      "source_group": "CLEAN",
+      "sha256": "117997c452a3ed46d8aa264a36d2e95e05064ddb02869be682af2c8f37966775",
+      "bytes": 1250
+    },
+    {
+      "path": "checks/clean/test_clean_baseline.py",
+      "source_group": "CLEAN",
+      "sha256": "8d399251db3813f07fce2fdf97edb4ee2e7ef1d432ecf4196ddd8d8fe8e34d94",
+      "bytes": 7401
+    },
+    {
+      "path": "checks/v3/bootstrap.py",
+      "source_group": "V3",
+      "sha256": "0b4346568747deae8a37966b89c3ba3e945aff288e686d2528a5abca594c9e80",
+      "bytes": 1571
+    },
+    {
+      "path": "checks/v3/run_local_tests.py",
+      "source_group": "V3",
+      "sha256": "f77d2a3aec0142eed70f76ac83da3d8a7119031212a7cc6f44fda9d1aac64426",
+      "bytes": 358
+    },
+    {
+      "path": "checks/v3/test_v3_continuation.py",
+      "source_group": "V3",
+      "sha256": "52759902270be45478451cc0e26886baa6d51a208a52dff3897ffc527d406bc0",
+      "bytes": 7677
+    },
+    {
+      "path": "checks/v4/bootstrap.py",
+      "source_group": "V4",
+      "sha256": "117997c452a3ed46d8aa264a36d2e95e05064ddb02869be682af2c8f37966775",
+      "bytes": 1250
+    },
+    {
+      "path": "checks/v4/test_v4.py",
+      "source_group": "V4",
+      "sha256": "0f9e6e888d16c6d2443b02e2805e20420fc4cc1a5c51f00d4a468ef31867bb0a",
+      "bytes": 13028
+    },
+    {
+      "path": "runtime/e2core/__init__.py",
+      "source_group": "KIT",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "runtime/e2core/cli.py",
+      "source_group": "KIT",
+      "sha256": "d12beeead9df07967318262958e7ab971f6d92d62a195a4d10ddd97fb8179bc9",
+      "bytes": 6989
+    },
+    {
+      "path": "runtime/e2core/core.py",
+      "source_group": "KIT",
+      "sha256": "fecd290b590d88e81e6fa5fbc4b083430cce088415a5bc7091821725402b5cfa",
+      "bytes": 27045
+    },
+    {
+      "path": "runtime/e2core/demo.py",
+      "source_group": "KIT",
+      "sha256": "207aea6fc340666dc6148a8309b7e9e49d5658656d4d2af7aa6fd4168c5d999c",
+      "bytes": 5223
+    },
+    {
+      "path": "runtime/e2core/e3_evolution_audit.py",
+      "source_group": "KIT",
+      "sha256": "1268141ae52fc5b16a25ea9376d334d7d895fc09c88a25f9aa7ef3e52b7afd87",
+      "bytes": 5273
+    },
+    {
+      "path": "runtime/e2core/e3_mock_demo.py",
+      "source_group": "KIT",
+      "sha256": "7105009bfe2836d6cbeecda3ddcf0e48fbea3318f87ea30752313deb512cf04b",
+      "bytes": 1892
+    },
+    {
+      "path": "runtime/e2core/e3r1_mock_demo.py",
+      "source_group": "KIT",
+      "sha256": "1815a6566370128e0f5f913e7b69b70f6168b2009210a1e84c8a50fe018b1687",
+      "bytes": 6080
+    },
+    {
+      "path": "runtime/e2core/e3r1_portfolio_audit.py",
+      "source_group": "KIT",
+      "sha256": "b7cc14b358063db27bde4554adc48cac9907276a1f1d42aaf39db9455aee9fe7",
+      "bytes": 2205
+    },
+    {
+      "path": "runtime/e2core/e3r1r2_upgrade.py",
+      "source_group": "KIT",
+      "sha256": "46552f10b1518a8b53d443429a196b48a72661f379e7848d5bc9eb33610239ff",
+      "bytes": 2172
+    },
+    {
+      "path": "runtime/e2core/engine.py",
+      "source_group": "KIT",
+      "sha256": "57b848903d6004da52fffabd62f0776b365af9b177d3e998d88a02c150f220b1",
+      "bytes": 55892
+    },
+    {
+      "path": "runtime/e2core/evidence_audit.py",
+      "source_group": "KIT",
+      "sha256": "ec477a7623d96a0909aa6f8d342e5a1d92d803c49d6bf773043a660486eb3f8a",
+      "bytes": 4117
+    },
+    {
+      "path": "runtime/e2core/evidence_smoke.py",
+      "source_group": "KIT",
+      "sha256": "4db80fe51db5f29845e2382d31ffe3a330b2b83ebab86bcee448afa52685b614",
+      "bytes": 1932
+    },
+    {
+      "path": "runtime/e2core/importer.py",
+      "source_group": "KIT",
+      "sha256": "27e4403fcd84beb1f400c9a17aa28c21225a46347de1154c544f10acfc8c00e3",
+      "bytes": 4920
+    },
+    {
+      "path": "runtime/e2core/literature.py",
+      "source_group": "KIT",
+      "sha256": "438c41fd6d9627568624cfbc7f213722897fd84af723b413c33f8a65ee93d6b6",
+      "bytes": 3415
+    },
+    {
+      "path": "runtime/e2core/long_campaign.py",
+      "source_group": "KIT",
+      "sha256": "50c4584d9a1970d76728e76502a9f86b0f130226f60678dcd06474e0279c8417",
+      "bytes": 23106
+    },
+    {
+      "path": "runtime/e2core/mock.py",
+      "source_group": "KIT",
+      "sha256": "41802320b0a7757303e41ce7701a290a7047148f3ff1083bcfddb38c221131ea",
+      "bytes": 6138
+    },
+    {
+      "path": "runtime/e2core/provider.py",
+      "source_group": "KIT",
+      "sha256": "dd7a2901ac7cca19dccf5b831b73581357cb6b7a22c71b4af95fcb0c352fbbeb",
+      "bytes": 4208
+    },
+    {
+      "path": "runtime/e2core/r3_revalidation.py",
+      "source_group": "KIT",
+      "sha256": "6dc370410114bad8a223d469f9e343b41092ac5bf09b91c09d6b500acccdc7d1",
+      "bytes": 6723
+    },
+    {
+      "path": "runtime/e2core/r4_recovery.py",
+      "source_group": "KIT",
+      "sha256": "74b6accdd538790e89c78d097d7d5dce05a23c33191e0bfeff1817f44540ee15",
+      "bytes": 7533
+    },
+    {
+      "path": "runtime/e2core/recovery.py",
+      "source_group": "KIT",
+      "sha256": "852bba85f68b1456e4847d7d7ce5a6a7c456f59fbf0962b2f5dba2a0699ec8f3",
+      "bytes": 8863
+    },
+    {
+      "path": "runtime/e2core/research_context.py",
+      "source_group": "KIT",
+      "sha256": "c0c0c65218efb76ad6c5c6192e8360c4fff3c06e33aacc6053234c7cf3999c91",
+      "bytes": 7914
+    },
+    {
+      "path": "runtime/e2core/research_literature.py",
+      "source_group": "KIT",
+      "sha256": "4b13d8e963258308f73402b89e1aee9b8747b010818604f505b8e37ab7521689",
+      "bytes": 29991
+    },
+    {
+      "path": "runtime/e2core/science_sandbox.py",
+      "source_group": "KIT",
+      "sha256": "e460febffe7bf33dcf611c4c18b4801961e8b411e8e00087c8012cc546e1a716",
+      "bytes": 10796
+    },
+    {
+      "path": "runtime/e2core/verified_science.py",
+      "source_group": "KIT",
+      "sha256": "37021f4ad688df614fa83846569c0c8cab8d19481b3e71cb39a445ea3497a0e2",
+      "bytes": 7371
+    },
+    {
+      "path": "runtime/science_frontier_campaign.py",
+      "source_group": "OLD",
+      "sha256": "c13378ac4011203cb7a950e86b785888ebf833a0f807186d4c98fde8f87b1aef",
+      "bytes": 11900
+    },
+    {
+      "path": "runtime/scientific_closed_loop_v3.py",
+      "source_group": "V3",
+      "sha256": "eec8ff50651a75e0ca10fed41f5404f61c7cc93677b9c0af1de99c59b48116d5",
+      "bytes": 24501
+    },
+    {
+      "path": "runtime/scientific_problem_autorun.py",
+      "source_group": "V2",
+      "sha256": "4d1948438af77eff16b92cdcc33564c77a44e210a979237510e18d54580c1536",
+      "bytes": 5076
+    },
+    {
+      "path": "runtime/scientific_problem_evolution.py",
+      "source_group": "V2",
+      "sha256": "9d3f61c33e16dd5b4953fe17043401856ff306d508794126693aacaf182db7da",
+      "bytes": 51522
+    },
+    {
+      "path": "runtime/scientific_research_readiness_v4.py",
+      "source_group": "V4",
+      "sha256": "bf5fe6a1a87df68e4055694dffa19f14e1c57ee8b49d240a34b219f4f07cf7ef",
+      "bytes": 16227
+    },
+    {
+      "path": "runtime/scientific_v4_clean_baseline.py",
+      "source_group": "CLEAN",
+      "sha256": "1a2b9ffb8c81a4f458ecec4da30ba88bdf3ef2ef11a97803fda0b938217a12d9",
+      "bytes": 12352
+    },
+    {
+      "path": "runtime/tests/test_e3_evolution.py",
+      "source_group": "KIT",
+      "sha256": "14b192de6dff2ac6936857c5a062295d411719a30b47b1ee9371b07cdec71bb8",
+      "bytes": 12285
+    }
+  ],
+  "fixed_pins": {
+    "e2core/core.py": "fecd290b590d88e81e6fa5fbc4b083430cce088415a5bc7091821725402b5cfa",
+    "e2core/provider.py": "dd7a2901ac7cca19dccf5b831b73581357cb6b7a22c71b4af95fcb0c352fbbeb",
+    "e2core/engine.py": "57b848903d6004da52fffabd62f0776b365af9b177d3e998d88a02c150f220b1",
+    "e2core/long_campaign.py": "50c4584d9a1970d76728e76502a9f86b0f130226f60678dcd06474e0279c8417",
+    "scientific_problem_evolution.py": "9d3f61c33e16dd5b4953fe17043401856ff306d508794126693aacaf182db7da",
+    "scientific_problem_autorun.py": "4d1948438af77eff16b92cdcc33564c77a44e210a979237510e18d54580c1536",
+    "scientific_closed_loop_v3.py": "eec8ff50651a75e0ca10fed41f5404f61c7cc93677b9c0af1de99c59b48116d5",
+    "scientific_research_readiness_v4.py": "bf5fe6a1a87df68e4055694dffa19f14e1c57ee8b49d240a34b219f4f07cf7ef",
+    "scientific_v4_clean_baseline.py": "1a2b9ffb8c81a4f458ecec4da30ba88bdf3ef2ef11a97803fda0b938217a12d9"
+  },
+  "excluded": "V5, evaluation roots, model responses, secrets, data, logs"
+}
